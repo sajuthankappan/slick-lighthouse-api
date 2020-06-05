@@ -1,0 +1,20 @@
+{
+  "name": "saju-lighthouse-api",
+  "version": "0.1.0",
+  "description": "lighthouse api",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Saju Thankappan",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^2.14.1",
+    "lighthouse": "^6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.1.0"
+  }
+}
