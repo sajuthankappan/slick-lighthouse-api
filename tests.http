@@ -1,6 +1,9 @@
-POST http://localhost:3000/lh
+POST http://localhost:8080/lh
 Content-Type: application/json
 
 {
   "url": "https://tech.saju.dev/"
 }
+
+###
+GET http://localhost:8080/ping

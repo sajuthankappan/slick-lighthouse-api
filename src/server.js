@@ -38,7 +38,8 @@ fastify.post('/lh', lhPostOpts, async (request, reply) => {
 const start = async () => {
   try {
     const port = process.env.PORT || 8080;
-    await fastify.listen(port);
+    await fastify.listen(port, '0.0.0.0');
+    console.log(`Started at ${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
