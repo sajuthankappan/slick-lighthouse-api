@@ -22,17 +22,25 @@ const lhPostOpts = {
 };
 
 fastify.post('/lh', lhPostOpts, async (request, reply) => {
-  const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
-  const options = {output: 'json', onlyCategories: ['performance'], port: chrome.port};
-  const runnerResult = await lighthouse(request.body.url, options);
-
-  // `.lhr` is the Lighthouse Result as a JS object
-  console.log('Report is done for', runnerResult.lhr.finalUrl);
-  console.log('Performance score was', runnerResult.lhr.categories.performance.score * 100);
-
-  await chrome.kill();
-  //return { report: JSON.parse(runnerResult.lhr)};
-  return runnerResult.lhr;
+  try {
+    const chrome = await chromeLauncher.launch({chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']});
+    console.log('Launched chrome in port ', chrome.port);
+    const options = {output: 'json', onlyCategories: ['performance'], port: chrome.port};
+    const runnerResult = await lighthouse(request.body.url, options);
+    
+    // `.lhr` is the Lighthouse Result as a JS object
+    console.log('Report is done for', runnerResult.lhr.finalUrl);
+    console.log('Performance score for ', request.body.url, ' was ', runnerResult.lhr.categories.performance.score * 100);
+    
+    await chrome.kill();
+    //return { report: JSON.parse(runnerResult.lhr)};
+    return runnerResult.lhr;
+  } catch (e) {
+    console.error(e);
+    reply
+      .code(500)
+      .send('Internal server error');
+  }
 });
 
 const start = async () => {
