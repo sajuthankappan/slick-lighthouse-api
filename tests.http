@@ -1,9 +1,12 @@
-POST http://localhost:8080/lh
+POST {{lh6BaseUrl}}/report
 Content-Type: application/json
 
 {
-  "url": "https://tech.saju.dev/"
+  "url": "https://news.saju.dev/"
 }
 
 ###
-GET http://localhost:8080/ping
+GET {{lh6BaseUrl}}/ping
+
+###
+GET {{lh6BaseUrl}}
