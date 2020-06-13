@@ -120,7 +120,7 @@ const getThrottling = (request) => {
   } else {
     if (request.body.device === 'desktop') {
       return lighthouseConstants.throttling.desktopDense4G;
-    } else if (request.body.device === 'mobile') {
+    } else if (!request.body.device || request.body.device === 'mobile') {
       return lighthouseConstants.throttling.desktopDense4G;
     } else {
       throw new Error(`Unknown device ${request.body.device}`);
