@@ -2,7 +2,9 @@ POST {{lh6BaseUrl}}/report
 Content-Type: application/json
 
 {
-  "url": "https://news.saju.dev/"
+  "url": "https://news.saju.dev/",
+  "device": "desktop",
+  "throttling": "desktopDense4G"
 }
 
 ###
