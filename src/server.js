@@ -76,9 +76,8 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
 });
 
 const getLighthouseConfig = (request) => {
+  const throttling = getThrottling(request);
   if (request.body.device === 'desktop') {
-    const throttling = getThrottling(request);
-    
     // Taken from https://github.com/GoogleChrome/lighthouse/blob/master/lighthouse-core/config/lr-desktop-config.js
     return {
       extends: 'lighthouse:default',
@@ -91,8 +90,6 @@ const getLighthouseConfig = (request) => {
       },
     };
   } else if (!request.body.device || request.body.device === 'mobile'){
-    const throttling = getThrottling(request);
-
     return {
       extends: 'lighthouse:default',
       settings: {
@@ -121,7 +118,7 @@ const getThrottling = (request) => {
     if (request.body.device === 'desktop') {
       return lighthouseConstants.throttling.desktopDense4G;
     } else if (!request.body.device || request.body.device === 'mobile') {
-      return lighthouseConstants.throttling.desktopDense4G;
+      return lighthouseConstants.throttling.mobileSlow4G;
     } else {
       throw new Error(`Unknown device ${request.body.device}`);
     }
