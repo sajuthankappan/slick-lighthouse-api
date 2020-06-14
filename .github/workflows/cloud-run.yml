@@ -22,7 +22,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   RUN_REGION: us-east4
-  SERVICE_NAME: slick-lighthouse5
+  SERVICE_NAME: slick-lh5
 
 jobs:
   setup-build-deploy:
