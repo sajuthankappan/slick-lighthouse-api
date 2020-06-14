@@ -1,4 +1,4 @@
-POST {{lh5BaseUrl}}/report
+POST {{lh6BaseUrl}}/report
 Content-Type: application/json
 
 {
@@ -6,7 +6,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{lh5BaseUrl}}/ping
+GET {{lh6BaseUrl}}/ping
 
 ###
-GET {{lh5BaseUrl}}
+GET {{lh6BaseUrl}}

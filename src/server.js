@@ -4,7 +4,7 @@ const lighthouseConstants = require('../node_modules/lighthouse/lighthouse-core/
 const chromeLauncher = require('chrome-launcher');
 
 fastify.get('/', async (request, reply) => {
-  return { hello: 'lighthouse 5' };
+  return { hello: 'lighthouse 6' };
 });
 
 fastify.get('/ping', async (request, reply) => {
