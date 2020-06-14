@@ -20,7 +20,7 @@ COPY . ./
 #RUN apt-get install -y apt-utils
 #RUN apt-get install -y chromium
 
-RUN apk --no-cache upgrade && apk add --no-cache chromium
+RUN apk --no-cache upgrade && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main/ chromium=81.0.4044.113-r0
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
