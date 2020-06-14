@@ -19,17 +19,16 @@ const lhPostOpts = {
         url: { type: 'string' },
         device: { type: 'string' },
         throttling: { type: 'string' },
+        attempts: { type: 'number' },
       }
     }
   }
 };
 
-const totalAttemptsEnv = process.env.SAJU_LIGHTHOUSE_TOTAL_ATTEMPTS || '3';
-const totalAttempts = parseInt(totalAttemptsEnv);
-
 fastify.post('/report', lhPostOpts, async (request, reply) => {
   try {
     const config = getLighthouseConfig(request);
+    const attempts = getAttempts(request);
     const chrome = await chromeLauncher.launch({chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']});
     console.log('Launched chrome in port ', chrome.port);
     const options = {output: 'json', onlyCategories: ['performance'], port: chrome.port};
@@ -38,7 +37,7 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
     let bestScore = 0;
     let bestScoreIndex = 0;
 
-    for (let attempt = 0; attempt < totalAttempts; attempt++) {
+    for (let attempt = 0; attempt < attempts; attempt++) {
       const runnerResult = await lighthouse(request.body.url, options, config);
       // `.lhr` is the Lighthouse Result as a JS object
       console.log('Report attempt ', attempt, ' is done for', runnerResult.lhr.finalUrl);
@@ -52,7 +51,7 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
 
     await chrome.kill();
 
-    if (totalAttempts === 1) {
+    if (attempts === 1) {
       return results[0];
     } else {
       return { 
@@ -122,6 +121,14 @@ const getThrottling = (request) => {
     } else {
       throw new Error(`Unknown device ${request.body.device}`);
     }
+  }
+};
+
+const getAttempts = (request) => {
+  if (request.body.attempts) {
+    return parseInt(request.body.attempts);
+  } else {
+    return 3;
   }
 };
 
