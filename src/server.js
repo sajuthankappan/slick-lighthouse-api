@@ -20,6 +20,12 @@ const lhPostOpts = {
         device: { type: 'string' },
         throttling: { type: 'string' },
         attempts: { type: 'number' },
+        blockedUrlPatterns: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        }
       }
     }
   }
@@ -29,9 +35,11 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
   try {
     const config = getLighthouseConfig(request);
     const attempts = getAttempts(request);
+    const blockedUrlPatterns = getBlockedUrlPatterns(request);
+    console.info(blockedUrlPatterns);
     const chrome = await chromeLauncher.launch({chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']});
     console.log('Launched chrome in port ', chrome.port);
-    const options = {output: 'json', onlyCategories: ['performance'], port: chrome.port};
+    const options = {output: 'json', blockedUrlPatterns, onlyCategories: ['performance'], port: chrome.port};
     
     let results = [];
     let bestScore = 0;
@@ -129,6 +137,14 @@ const getAttempts = (request) => {
     return parseInt(request.body.attempts);
   } else {
     return 3;
+  }
+};
+
+const getBlockedUrlPatterns = (request) => {
+  if (request.body.blockedUrlPatterns) {
+    return request.body.blockedUrlPatterns;
+  } else {
+    return null;
   }
 };
 
