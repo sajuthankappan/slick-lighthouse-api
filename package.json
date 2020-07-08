@@ -11,10 +11,10 @@
   "author": "Saju Thankappan",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^2.14.1",
-    "lighthouse": "^6.0.0"
+    "fastify": "^2.15.1",
+    "lighthouse": "^6.1.1"
   },
   "devDependencies": {
-    "eslint": "^7.1.0"
+    "eslint": "^7.4.0"
   }
 }
