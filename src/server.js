@@ -20,6 +20,12 @@ const lhPostOpts = {
         device: { type: 'string' },
         throttling: { type: 'string' },
         attempts: { type: 'number' },
+        blockedUrlPatterns: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        }
       }
     }
   }
@@ -29,15 +35,16 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
   try {
     const config = getLighthouseConfig(request);
     const attempts = getAttempts(request);
-    const chrome = await chromeLauncher.launch({chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']});
-    console.log('Launched chrome in port ', chrome.port);
-    const options = {output: 'json', onlyCategories: ['performance'], port: chrome.port};
+    const blockedUrlPatterns = getBlockedUrlPatterns(request);
     
     let results = [];
     let bestScore = 0;
     let bestScoreIndex = 0;
-
+    
     for (let attempt = 0; attempt < attempts; attempt++) {
+      const chrome = await chromeLauncher.launch({chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']});
+      console.log('Launched chrome in port ', chrome.port);
+      const options = {output: 'json', blockedUrlPatterns, onlyCategories: ['performance'], port: chrome.port};
       const runnerResult = await lighthouse(request.body.url, options, config);
       // `.lhr` is the Lighthouse Result as a JS object
       console.log('Report attempt ', attempt, ' is done for', runnerResult.lhr.finalUrl);
@@ -47,9 +54,8 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
         bestScore = runnerResult.lhr.categories.performance.score;
         bestScoreIndex = attempt;
       }
+      await chrome.kill();
     }
-
-    await chrome.kill();
 
     if (attempts === 1) {
       return results[0];
@@ -129,6 +135,14 @@ const getAttempts = (request) => {
     return parseInt(request.body.attempts);
   } else {
     return 3;
+  }
+};
+
+const getBlockedUrlPatterns = (request) => {
+  if (request.body.blockedUrlPatterns) {
+    return request.body.blockedUrlPatterns;
+  } else {
+    return null;
   }
 };
 
