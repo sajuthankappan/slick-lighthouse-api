@@ -2,6 +2,7 @@ const fastify = require('fastify')();
 const lighthouse = require('lighthouse');
 const lighthouseConstants = require('../node_modules/lighthouse/lighthouse-core/config/constants');
 const chromeLauncher = require('chrome-launcher');
+const CDP = require('chrome-remote-interface');
 
 fastify.get('/', async (request, reply) => {
   return { hello: 'lighthouse 6' };
@@ -25,6 +26,13 @@ const lhPostOpts = {
           items: {
             type: 'string'
           }
+        },
+        cookie: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            value: { type: 'string' }
+          }
         }
       }
     }
@@ -44,6 +52,16 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
     for (let attempt = 0; attempt < attempts; attempt++) {
       const chrome = await chromeLauncher.launch({chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']});
       console.log('Launched chrome in port ', chrome.port);
+
+      if (request.body.cookie && request.body.cookie.name && request.body.cookie.value) {
+        const client = await CDP({ port: chrome.port });
+        var { Network } = client;
+  
+        await Network.enable();
+        await Network.setCookie({ name: request.body.cookie.name, value: request.body.cookie.value, url: request.body.url });
+        console.log('Cookie set');
+      }
+      
       const options = {output: 'json', blockedUrlPatterns, onlyCategories: ['performance'], port: chrome.port};
       const runnerResult = await lighthouse(request.body.url, options, config);
       // `.lhr` is the Lighthouse Result as a JS object

@@ -1,6 +1,6 @@
 {
-  "name": "saju-lighthouse-api",
-  "version": "0.2.0",
+  "name": "slick-lighthouse-api",
+  "version": "0.3.0",
   "description": "lighthouse api",
   "main": "src/server.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "author": "Saju Thankappan",
   "license": "ISC",
   "dependencies": {
+    "chrome-remote-interface": "^0.28.2",
     "fastify": "^2.15.1",
     "lighthouse": "^6.1.1"
   },
