@@ -54,12 +54,21 @@ fastify.post('/report', lhPostOpts, async (request, reply) => {
       console.log('Launched chrome in port ', chrome.port);
 
       if (request.body.cookie && request.body.cookie.name && request.body.cookie.value) {
-        const client = await CDP({ port: chrome.port });
-        var { Network } = client;
-  
-        await Network.enable();
-        await Network.setCookie({ name: request.body.cookie.name, value: request.body.cookie.value, url: request.body.url });
-        console.log('Cookie set');
+        let client;
+        try {
+          client = await CDP({ port: chrome.port });
+          var { Network } = client;
+    
+          await Network.enable();
+          await Network.setCookie({ name: request.body.cookie.name, value: request.body.cookie.value, url: request.body.url });
+          console.log('Cookie set');
+        } catch (err) {
+          console.error(err);
+        } finally {
+          if (client) {
+            await client.close();
+          }
+        }
       }
 
       const options = {output: 'json', blockedUrlPatterns, onlyCategories: ['performance'], port: chrome.port};
