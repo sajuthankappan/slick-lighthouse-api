@@ -152,7 +152,7 @@ const getAttempts = (request) => {
   if (request.body.attempts) {
     return parseInt(request.body.attempts);
   } else {
-    return 3;
+    return 1;
   }
 };
 
