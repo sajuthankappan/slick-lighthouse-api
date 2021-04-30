@@ -1,6 +1,6 @@
 {
   "name": "slick-lighthouse-api",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "lighthouse api",
   "main": "src/server.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "dependencies": {
     "chrome-remote-interface": "^0.28.2",
     "fastify": "^2.15.3",
-    "lighthouse": "^7.1.0"
+    "lighthouse": "^7.4.0"
   },
   "devDependencies": {
     "eslint": "^7.10.0"
