@@ -11,9 +11,9 @@
   "author": "Saju Thankappan",
   "license": "ISC",
   "dependencies": {
-    "chrome-remote-interface": "^0.28.2",
+    "chrome-remote-interface": "^0.30.1",
     "fastify": "^2.15.3",
-    "lighthouse": "^7.4.0"
+    "lighthouse": "^8.0.0"
   },
   "devDependencies": {
     "eslint": "^7.10.0"
